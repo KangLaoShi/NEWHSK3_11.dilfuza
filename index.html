@@ -1,548 +1,778 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HSK3 Lesson 11 - Dilfuza Kāng lǎo shī</title>
-  
-  <!-- 引入 Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- 引入 React 和 ReactDOM -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  
-  <!-- 引入 Babel 以在浏览器中编译 JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSK 3 - Lesson 11</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap');
 
-  <!-- 修复 Babel 预设解析导致的报错问题，直接使用对象引用 -->
-  <script>
-    Babel.registerPreset('react-classic', {
-      presets: [
-        [Babel.availablePresets.react, { runtime: 'classic' }]
-      ]
-    });
-  </script>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Premium dark gradient background */
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    .perspective-1000 { perspective: 1000px; }
-    .preserve-3d { transform-style: preserve-3d; }
-    .backface-hidden { backface-visibility: hidden; }
-    .rotate-y-180 { transform: rotateY(180deg); }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes fadeIn { 
-      from { opacity: 0; transform: translateY(10px); } 
-      to { opacity: 1; transform: translateY(0); } 
-    }
-    .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-  </style>
+        .zh-text {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        /* Glassmorphism utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Flashcard Flip Animation */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .transition-transform-duration-500 { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+        
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-white selection:bg-blue-500/30">
+<body>
+    <div id="root"></div>
 
-  <div id="root"></div>
-
-  <!-- 使用上面注册的经典模式 preset -->
-  <script type="text/babel" data-presets="react-classic">
-    const { useState, useEffect } = React;
-
-    // --- 图标组件 (替代 lucide-react 以确保纯 HTML 可运行) ---
-    const Volume2 = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
-    const ChevronLeft = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>);
-    const ChevronRight = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>);
-    const CheckCircle2 = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
-    const XCircle = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>);
-    const PlayCircle = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>);
-    const RefreshCw = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 0 20.49 15"></path></svg>);
-    const BookOpen = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>);
-    const MessageCircle = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>);
-    const FileText = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>);
-    const CheckSquare = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>);
-    const Edit3 = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>);
-    const Award = ({className}) => (<svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>);
-
-    // --- DATA ---
-    const WORDS = [
-      { cn: "太阳", py: "tàiyáng", uz: "Quyosh", ru: "Солнце", en: "Sun" },
-      { cn: "西", py: "xī", uz: "G'arb", ru: "Запад", en: "West" },
-      { cn: "生气", py: "shēngqì", uz: "Jahli chiqmoq", ru: "Сердиться", en: "Angry" },
-      { cn: "行李箱", py: "xínglixiāng", uz: "Jomadon", ru: "Чемодан", en: "Suitcase" },
-      { cn: "自己", py: "zìjǐ", uz: "O'zi", ru: "Сам", en: "Oneself" },
-      { cn: "发现", py: "fāxiàn", uz: "Koshf etmoq", ru: "Обнаружить", en: "Discover" },
-      { cn: "护照", py: "hùzhào", uz: "Pasport", ru: "Паспорт", en: "Passport" },
-      { cn: "起飞", py: "qǐfēi", uz: "Parvoz qilmoq", ru: "Взлетать", en: "Take off" },
-      { cn: "司机", py: "sījī", uz: "Haydovchi", ru: "Водитель", en: "Driver" },
-      { cn: "教", py: "jiāo", uz: "O'rgatmoq", ru: "Учить", en: "Teach" },
-      { cn: "画", py: "huà", uz: "Chizmoq", ru: "Рисовать", en: "Draw/Paint" },
-      { cn: "需要", py: "xūyào", uz: "Kerak", ru: "Нуждаться", en: "Need" },
-      { cn: "终于", py: "zhōngyú", uz: "Nihoyat", ru: "Наконец", en: "Finally" },
-      { cn: "爷爷", py: "yéye", uz: "Bobo", ru: "Дедушка", en: "Grandfather" },
-      { cn: "礼物", py: "lǐwù", uz: "Sovg'a", ru: "Подарок", en: "Gift" },
-      { cn: "奶奶", py: "nǎinai", uz: "Buvi", ru: "Бабушка", en: "Grandmother" },
-      { cn: "遇到", py: "yùdào", uz: "Uchratmoq", ru: "Встретить", en: "Meet" },
-      { cn: "一边", py: "yìbiān", uz: "Bir vaqtning o'zida", ru: "Одновременно", en: "At the same time" },
-      { cn: "过去", py: "guòqù", uz: "O'tmish", ru: "Прошлое", en: "Past" },
-      { cn: "一般", py: "yìbān", uz: "Odatda", ru: "Обычно", en: "Generally" }
-    ];
-
-    const DIALOGUES = [
-      {
-        title: "课文 1: 在办公室里，王一雪跟杨同乐在讨论工作",
-        lines: [
-          { speaker: "王一雪", cn: "今天下午经理不在，不开会了。", py: "Jīntiān xiàwǔ jīnglǐ bù zài, bù kāihuì le.", uz: "Bugun tushdan keyin menejer yo'q, majlis bo'lmaydi.", ru: "Сегодня днем менеджера нет, собрания не будет.", en: "The manager is not here this afternoon, there will be no meeting." },
-          { speaker: "杨同乐", cn: "那什么时候开会？", py: "Nà shénme shíhou kāihuì?", uz: "Unda majlis qachon bo'ladi?", ru: "Тогда когда будет собрание?", en: "Then when is the meeting?" },
-          { speaker: "王一雪", cn: "后天上午十点，会议地点换到第一会议室。我正要给大家发邮件。", py: "Hòutiān shàngwǔ shí diǎn, huìyì dìdiǎn huàn dào dì-yī huìyìshì. Wǒ zhèng yào gěi dàjiā fā yóujiàn.", uz: "Indinga ertlab soat o'nda, majlis joyi birinchi majlislar zaliga o'zgartirildi. Men hammaga elektron xat yubormoqchiman.", ru: "Послезавтра в десять утра место проведения собрания изменено на первый конференц-зал. Я как раз собираюсь отправить всем письмо.", en: "The day after tomorrow at ten in the morning, the meeting place has been changed to the first meeting room. I am just about to send everyone an email." },
-          { speaker: "杨同乐", cn: "开会的时候，我们用会议室的电脑还是自己的笔记本电脑？", py: "Kāihuì de shíhou, wǒmen yòng huìyìshì de diànnǎo háishì zìjǐ de bǐjìběn diànnǎo?", uz: "Majlis paytida biz majlislar zalidagi kompyuterdan foydalanamizmi yoki o'zimizning noutbuklarimizdanmi?", ru: "Во время собрания мы будем использовать компьютер в конференц-зале или свои собственные ноутбуки?", en: "During the meeting, do we use the meeting room's computer or our own laptops?" },
-          { speaker: "王一雪", cn: "会议室的电脑或者自己的电脑都可以。", py: "Huìyìshì de diànnǎo huòzhě zìjǐ de diànnǎo dōu kěyǐ.", uz: "Majlislar zalidagi kompyuter yoki o'zingizning kompyuteringiz ham bo'laveradi.", ru: "Подойдет как компьютер из конференц-зала, так и свой собственный.", en: "The meeting room's computer or your own computer is fine." },
-          { speaker: "杨同乐", cn: "那到时候咱们早点儿过去，你帮我把电脑接好吧。", py: "Nà dào shíhou zánmen zǎodiǎnr guòqù, nǐ bāng wǒ bǎ diànnǎo jiē hǎo ba.", uz: "Unda o'sha vaqtda biz ertaroq boramiz, siz menga kompyuterni ulashda yordam berasiz.", ru: "Тогда давайте пойдем пораньше, и ты поможешь мне подключить компьютер.", en: "Then let's go there a bit early, and you can help me set up the computer." }
-        ]
-      },
-      {
-        title: "课文 2: 在会议室，王一雪跟杨同乐在做会前准备",
-        lines: [
-          { speaker: "杨同乐", cn: "电脑接好了吗？", py: "Diànnǎo jiē hǎo le ma?", uz: "Kompyuter ulandimi?", ru: "Компьютер подключен?", en: "Is the computer connected?" },
-          { speaker: "王一雪", cn: "已经接好了，您开机看看有没有问题。", py: "Yǐjīng jiē hǎo le, nín kāijī kànkan yǒu méiyǒu wèntí.", uz: "Allaqachon ulandi, yoqib ko'ring muammo yo'qmi.", ru: "Уже подключен, включите и посмотрите, есть ли проблемы.", en: "It's already connected, turn it on and see if there are any problems." },
-          { speaker: "杨同乐", cn: "现在什么都看不见。", py: "Xiànzài shénme dōu kàn bu jiàn.", uz: "Hozir hech narsa ko'rinmayapti.", ru: "Сейчас ничего не видно.", en: "I can't see anything right now." },
-          { speaker: "王一雪", cn: "我检查一下哪里出问题了……您再试一下。", py: "Wǒ jiǎnchá yíxià nǎlǐ chū wèntí le…… Nín zài shì yíxià.", uz: "Men qayerda muammo chiqqanini tekshirib ko'raman... Yana bir bor urinib ko'ring.", ru: "Я проверю, в чем проблема... Попробуйте еще раз.", en: "Let me check where the problem is... Try again." },
-          { speaker: "杨同乐", cn: "看见了，但是听不见声音。", py: "Kàn jiàn le, dànshì tīng bu jiàn shēngyīn.", uz: "Ko'rdim, lekin ovoz eshitilmayapti.", ru: "Вижу, но не слышу звука.", en: "I can see it, but I can't hear any sound." },
-          { speaker: "王一雪", cn: "现在呢？", py: "Xiànzài ne?", uz: "Hozir-chi?", ru: "А сейчас?", en: "And now?" },
-          { speaker: "杨同乐", cn: "听得见声音，但是声音有点儿小，听不清楚。看来我没办法解决这个问题，只能找别人来帮帮忙了。", py: "Tīng de jiàn shēngyīn, dànshì shēngyīn yǒudiǎnr xiǎo, tīng bu qīngchu. Kànlái wǒ méi bànfǎ jiějué zhège wèntí, zhǐnéng zhǎo biérén lái bāngbang máng le.", uz: "Ovozni eshityapman, lekin ovoz biroz past, aniq eshitilmayapti. Aftidan, men bu muammoni hal qila olmayman, faqat boshqa birovdan yordam so'rashim mumkin.", ru: "Слышу звук, но он немного тихий, не очень четко. Похоже, я не смогу решить эту проблему, остается только позвать кого-нибудь на помощь.", en: "I can hear the sound, but it's a bit low, I can't hear it clearly. It seems I can't solve this problem, I can only ask someone else for help." }
-        ]
-      },
-      {
-        title: "课文 3: 在办公室里，王一雪跟杨同乐在聊天儿",
-        lines: [
-          { speaker: "王一雪", cn: "同乐，你看见老张了吗？", py: "Tónglè, nǐ kànjiàn Lǎo Zhāng le ma?", uz: "Tongle, Lao Janni ko'rdingizmi?", ru: "Тунлэ, ты видел Лао Чжана?", en: "Tongle, have you seen Lao Zhang?" },
-          { speaker: "杨同乐", cn: "老张没来。他说家里有点儿事，所以请假了。", py: "Lǎo Zhāng méi lái. Tā shuō jiālǐ yǒudiǎnr shì, suǒyǐ qǐngjià le.", uz: "Lao Jan kelmadi. U uyda ishi borligini aytdi, shuning uchun javob so'radi.", ru: "Лао Чжан не пришел. Он сказал, что у него дела дома, поэтому отпросился.", en: "Lao Zhang didn't come. He said he has some things to do at home, so he asked for leave." },
-          { speaker: "王一雪", cn: "好几个同事都休假了，开会前这么多工作我怕干不完。", py: "Hǎo jǐ gè tóngshì dōu xiūjià le, kāihuì qián zhème duō gōngzuò wǒ pà gàn bù wán.", uz: "Bir nechta hamkasblar ta'tilga chiqishdi, majlisdan oldin bunchalik ko'p ishni tugata olmayman deb qo'rqaman.", ru: "Несколько коллег в отпуске, боюсь, что не смогу закончить так много работы до собрания.", en: "Several colleagues are on vacation, I'm afraid I won't be able to finish so much work before the meeting." },
-          { speaker: "杨同乐", cn: "十二点多了，咱们先去吃饭吧。吃完饭，我跟您一起把这些工作做完。", py: "Shí'èr diǎn duō le, zánmen xiān qù chīfàn ba. Chī wán fàn, wǒ gēn nín yìqǐ bǎ zhèxiē gōngzuò zuò wán.", uz: "O'n ikkidan o'tdi, avval ovqatlanib kelaylik. Ovqatdan keyin men siz bilan birga bu ishlarni tugataman.", ru: "Уже больше двенадцати, давайте сначала пойдем поедим. После еды я помогу вам закончить эту работу.", en: "It's past twelve, let's go eat first. After eating, I'll finish this work with you." },
-          { speaker: "王一雪", cn: "你先去吃，我想再干一会儿。明天开会前要发到公司的邮箱里。", py: "Nǐ xiān qù chī, wǒ xiǎng zài gàn yíhuìr. Míngtiān kāihuì qián yào fā dào gōngsī de yóuxiāng lǐ.", uz: "Siz avval borib ovqatlaning, men yana biroz ishlamoqchiman. Ertaga majlisdan oldin kompaniya pochtasiga yuborishim kerak.", ru: "Идите сначала поешьте, я хочу еще немного поработать. До завтрашнего собрания нужно отправить на корпоративную почту.", en: "You go eat first, I want to work a little longer. I need to send it to the company email before the meeting tomorrow." },
-          { speaker: "杨同乐", cn: "您没看到邮件吗？经理还没回来呢，下周才能开会。", py: "Nín méi kàndào yóujiàn ma? Jīnglǐ hái méi huílái ne, xià zhōu cái néng kāihuì.", uz: "Elektron xatni ko'rmadingizmi? Menejer hali qaytib kelgani yo'q, majlis faqat keyingi haftada bo'ladi.", ru: "Разве вы не видели письмо? Менеджер еще не вернулся, собрание будет только на следующей неделе.", en: "Didn't you see the email? The manager hasn't come back yet, the meeting won't be until next week." },
-          { speaker: "王一雪", cn: "那不着急了。走，吃饭去。", py: "Nà bù zháojí le. Zǒu, chīfàn qù.", uz: "Unda shoshilmaymiz. Qani, ovqatlanishga boramiz.", ru: "Тогда можно не спешить. Пойдемте есть.", en: "Then there's no rush. Let's go eat." }
-        ]
-      },
-      {
-        title: "课文 4: 在家里，王一雪在写日记",
-        lines: [
-          { speaker: "王一雪", cn: "前几天，上海的同事来北京了。", py: "Qián jǐ tiān, Shànghǎi de tóngshì lái Běijīng le.", uz: "Bir necha kun oldin, Shanxaylik hamkasblar Pekinga kelishdi.", ru: "Несколько дней назад коллеги из Шанхая приехали в Пекин.", en: "A few days ago, colleagues from Shanghai came to Beijing." },
-          { speaker: "王一雪", cn: "一起吃饭时，他们跟我说最近有不少同事去上海工作了，问我愿意不愿意也去上海。", py: "Yìqǐ chīfàn shí, tāmen gēn wǒ shuō zuìjìn yǒu bù shǎo tóngshì qù Shànghǎi gōngzuò le, wèn wǒ yuànyì bu yuànyì yě qù Shànghǎi.", uz: "Birga ovqatlanayotganda, ular menga yaqinda bir qancha hamkasblar ishlash uchun Shanxayga ketishganini aytishdi va men ham Shanxayga borishni xohlaymanmi deb so'rashdi.", ru: "Во время совместного обеда они сказали мне, что в последнее время многие коллеги уехали работать в Шанхай, и спросили, не хочу ли я тоже поехать.", en: "While eating together, they told me that many colleagues have recently gone to work in Shanghai, and asked if I would also be willing to go to Shanghai." },
-          { speaker: "王一雪", cn: "我是这样想的：现在丈夫和孩子都在北京，刘明的工作很忙，小雪和小明也还小，我去别的城市工作就要离开他们。", py: "Wǒ shì zhèyàng xiǎng de: xiànzài zhàngfu hé háizi dōu zài Běijīng, Liú Míng de gōngzuò hěn máng, Xiǎoxuě hé Xiǎomíng yě hái xiǎo, wǒ qù biéde chéngshì gōngzuò jiù yào líkāi tāmen.", uz: "Men shunday o'ylayapman: hozir erim va farzandlarim Pekinda, Lyu Mingning ishi juda ko'p, Syaosyue va Syaomin hali ham yosh, men boshqa shaharga ishlashga ketsam ularni tashlab ketishim kerak.", ru: "Я думаю так: сейчас муж и дети в Пекине, у Лю Мина много работы, Сяосюэ и Сяомин еще маленькие, если я поеду работать в другой город, мне придется оставить их.", en: "I think like this: right now my husband and children are in Beijing, Liu Ming is very busy at work, Xiaoxue and Xiaoming are still young, if I go to work in another city I will have to leave them." },
-          { speaker: "王一雪", cn: "虽然去上海可能会有更好的机会，但是对我来说，生活也很重要，我不愿意为工作或学习离开家人。", py: "Suīrán qù Shànghǎi kěnéng huì yǒu gèng hǎo de jīhuì, dànshì duì wǒ lái shuō, shēnghuó yě hěn zhòngyào, wǒ bù yuànyì wèi gōngzuò huò xuéxí líkāi jiārén.", uz: "Garchi Shanxayga borishda yaxshiroq imkoniyatlar bo'lishi mumkin bo'lsa-da, men uchun hayot ham juda muhim, men ish yoki o'qish uchun oilamni tark etishni xohlamayman.", ru: "Хотя в Шанхае могут быть лучшие возможности, для меня жизнь тоже очень важна, я не хочу покидать семью ради работы или учебы.", en: "Although going to Shanghai might offer better opportunities, for me, life is also very important, I am not willing to leave my family for work or study." }
-        ]
-      }
-    ];
-
-    const GRAMMAR_POINTS = [
-      {
-        title: "一边...一边... (yìbiān... yìbiān...)",
-        explain: {
-          uz: "Ikki harakatning bir vaqtda sodir bo'lishini bildiradi.",
-          ru: "Указывает на два действия, происходящие одновременно.",
-          en: "Indicates two actions happening at the same time."
-        },
-        examples: [
-          { cn: "我们一边走一边聊。", py: "Wǒmen yìbiān zǒu yìbiān liáo.", uz: "Biz yurib, suhbatlashamiz." },
-          { cn: "他一边吃饭一边看电视。", py: "Tā yìbiān chīfàn yìbiān kàn diànshì.", uz: "U ovqatlanayotganda televizor ko'radi." }
-        ]
-      },
-      {
-        title: "终于 (zhōngyú)",
-        explain: {
-          uz: "Uzoq kutish yoki harakatdan keyin biror narsa sodir bo'lishini bildiradi (Nihoyat).",
-          ru: "Указывает, что что-то происходит после долгого ожидания или усилий.",
-          en: "Indicates something happens после a long wait or effort (Finally)."
-        },
-        examples: [
-          { cn: "飞机终于起飞了。", py: "Fēijī zhōngyú qǐfēi le.", uz: "Samolyot nihoyat parvoz qildi." },
-          { cn: "考试终于结束了。", py: "Kǎoshì zhōngyú jiéshù le.", uz: "Imtihon nihoyat tugadi." }
-        ]
-      }
-    ];
-
-    const VOCAB_TEST = [
-      { prompt: "太阳", options: ["Quyosh", "G'arb", "Jomadon", "Haydovchi"], correctIdx: 0 },
-      { prompt: "西", options: ["Pasport", "G'arb", "O'tmish", "Buvi"], correctIdx: 1 },
-      { prompt: "行李箱", options: ["Sovg'a", "Bobo", "Jomadon", "O'zi"], correctIdx: 2 },
-      { prompt: "生气", options: ["Nihoyat", "O'rgatmoq", "Uchratmoq", "Jahli chiqmoq"], correctIdx: 3 },
-      { prompt: "自己", options: ["O'zi", "Kerak", "Odatda", "Chizmoq"], correctIdx: 0 },
-      { prompt: "护照", options: ["Koshf etmoq", "Pasport", "Parvoz qilmoq", "Quyosh"], correctIdx: 1 },
-      { prompt: "发现", options: ["O'tmish", "Jomadon", "Koshf etmoq", "Haydovchi"], correctIdx: 2 },
-      { prompt: "司机", options: ["Bir vaqtning o'zida", "Buvi", "Sovg'a", "Haydovchi"], correctIdx: 3 },
-      { prompt: "起飞", options: ["Parvoz qilmoq", "G'arb", "Jahli chiqmoq", "O'zi"], correctIdx: 0 },
-      { prompt: "教", options: ["Pasport", "O'rgatmoq", "Nihoyat", "Odatda"], correctIdx: 1 },
-      { prompt: "遇到", options: ["Chizmoq", "Kerak", "Uchratmoq", "Bobo"], correctIdx: 2 },
-      { prompt: "需要", options: ["Quyosh", "G'arb", "Jomadon", "Kerak"], correctIdx: 3 },
-      { prompt: "终于", options: ["Nihoyat", "O'zi", "Koshf etmoq", "Parvoz qilmoq"], correctIdx: 0 },
-      { prompt: "奶奶", options: ["Sovg'a", "Buvi", "Bobo", "Haydovchi"], correctIdx: 1 },
-      { prompt: "画", options: ["O'rgatmoq", "Uchratmoq", "Chizmoq", "Kerak"], correctIdx: 2 },
-      { prompt: "礼物", options: ["Nihoyat", "O'tmish", "Odatda", "Sovg'a"], correctIdx: 3 },
-      { prompt: "过去", options: ["O'tmish", "Pasport", "G'arb", "Jomadon"], correctIdx: 0 },
-      { prompt: "爷爷", options: ["Jahli chiqmoq", "Bobo", "O'zi", "Koshf etmoq"], correctIdx: 1 },
-      { prompt: "一边", options: ["Haydovchi", "Parvoz qilmoq", "Bir vaqtning o'zida", "O'rgatmoq"], correctIdx: 2 },
-      { prompt: "一般", options: ["Chizmoq", "Kerak", "Nihoyat", "Odatda"], correctIdx: 3 },
-    ];
-
-    const GRAMMAR_TEST = [
-      { prompt: "他 ___ 吃饭 ___ 说话。", options: ["一边...一边", "因为...所以", "虽然...但是", "如果...就"], correctIdx: 0 },
-      { prompt: "飞机 ___ 到了。", options: ["一边", "终于", "发现", "过去"], correctIdx: 1 },
-      { prompt: "这件 ___ 是给你的。", options: ["遇到", "爷爷", "礼物", "起飞"], correctIdx: 2 },
-      { prompt: "我 ___ 没带护照。", options: ["西", "太阳", "司机", "发现"], correctIdx: 3 },
-      { prompt: "你的 ___ 在哪里？", options: ["护照", "起飞", "遇到", "一边"], correctIdx: 0 },
-      { prompt: "他 ___ 教我汉语。", options: ["终于", "自己", "过去", "太阳"], correctIdx: 1 },
-      { prompt: "我们 ___ 去北京。", options: ["一般", "一边", "需要", "遇到"], correctIdx: 2 },
-      { prompt: "这个人我 ___ 过。", options: ["发现", "终于", "需要", "遇到"], correctIdx: 3 },
-      { prompt: "___ 的事情不要再说了。", options: ["过去", "一边", "自己", "教"], correctIdx: 0 },
-      { prompt: "弟弟 ___ 打游戏 ___ 听歌。", options: ["遇到...遇到", "一边...一边", "终于...终于", "一般...一般"], correctIdx: 1 },
-      { prompt: "我 ___ 不喜欢吃辣的。", options: ["终于", "发现", "一般", "过去"], correctIdx: 2 },
-      { prompt: "太阳从 ___ 边出来了。", options: ["护照", "礼物", "行李箱", "西"], correctIdx: 3 },
-      { prompt: "那个 ___ 开车很快。", options: ["司机", "奶奶", "爷爷", "发现"], correctIdx: 0 },
-      { prompt: "别 ___ 了，是我的错。", options: ["起飞", "生气", "教", "画"], correctIdx: 1 },
-      { prompt: "他在纸上 ___ 了一只猫。", options: ["遇到", "需要", "画", "一边"], correctIdx: 2 },
-    ];
-
-    const FILL_BLANK_TEST = [
-      { prompt: "今天的 ___ 很大。", options: ["太阳", "西", "生气", "司机"], correctIdx: 0 },
-      { prompt: "太阳在 ___ 边落下。", options: ["行李箱", "西", "护照", "奶奶"], correctIdx: 1 },
-      { prompt: "对不起，你别 ___ 了。", options: ["发现", "遇到", "生气", "起飞"], correctIdx: 2 },
-      { prompt: "我的 ___ 太重了，拿不动。", options: ["爷爷", "礼物", "司机", "行李箱"], correctIdx: 3 },
-      { prompt: "这件事我 ___ 可以做。", options: ["自己", "终于", "过去", "一般"], correctIdx: 0 },
-      { prompt: "回家后我 ___ 钥匙丢了。", options: ["教", "发现", "画", "需要"], correctIdx: 1 },
-      { prompt: "出国需要带 ___。", options: ["礼物", "司机", "护照", "爷爷"], correctIdx: 2 },
-      { prompt: "我们的航班马上要 ___ 了。", options: ["遇到", "生气", "发现", "起飞"], correctIdx: 3 },
-      { prompt: "那个出租车 ___ 很热情。", options: ["司机", "奶奶", "礼物", "护照"], correctIdx: 0 },
-      { prompt: "王老师 ___ 我们汉语。", options: ["画", "教", "终于", "一边"], correctIdx: 1 },
-      { prompt: "妹妹喜欢 ___ 画。", options: ["需要", "遇到", "画", "发现"], correctIdx: 2 },
-      { prompt: "我 ___ 你的帮助。", options: ["起飞", "过去", "一般", "需要"], correctIdx: 3 },
-      { prompt: "等了很久，公交车 ___ 来了。", options: ["终于", "一边", "自己", "生气"], correctIdx: 0 },
-      { prompt: "我的 ___ 今年八十岁了。", options: ["礼物", "爷爷", "行李箱", "西"], correctIdx: 1 },
-      { prompt: "这是我送给你的生日 ___。", options: ["护照", "太阳", "礼物", "司机"], correctIdx: 2 },
-      { prompt: "___ 做的饭很好吃。", options: ["行李箱", "起飞", "过去", "奶奶"], correctIdx: 3 },
-      { prompt: "昨天我在路上 ___ 了老朋友。", options: ["遇到", "发现", "教", "需要"], correctIdx: 0 },
-      { prompt: "他们 ___ 喝茶 ___ 聊天。", options: ["终于", "一边", "自己", "一般"], correctIdx: 1 },
-      { prompt: "___ 的事情我都忘了。", options: ["生气", "西", "过去", "太阳"], correctIdx: 2 },
-      { prompt: "周末我 ___ 在家看书。", options: ["终于", "遇到", "起飞", "一般"], correctIdx: 3 },
-    ];
-
-    // --- HELPERS ---
-    const playAudio = (text) => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'zh-CN';
-        utterance.rate = 0.85;
-        window.speechSynthesis.speak(utterance);
-      }
-    };
-
-    // --- COMPONENTS ---
-    const FlashcardTab = () => {
-      const [index, setIndex] = useState(0);
-      const [flipped, setFlipped] = useState(false);
-
-      const currentWord = WORDS[index];
-
-      const handleNext = (e) => {
-        e.stopPropagation();
-        setFlipped(false);
-        setTimeout(() => setIndex((prev) => (prev + 1) % WORDS.length), 150);
-      };
-
-      const handlePrev = (e) => {
-        e.stopPropagation();
-        setFlipped(false);
-        setTimeout(() => setIndex((prev) => (prev - 1 + WORDS.length) % WORDS.length), 150);
-      };
-
-      const toggleFlip = () => setFlipped(!flipped);
-
-      return (
-        <div className="flex flex-col items-center justify-center h-full space-y-8 animate-fade-in">
-          <div 
-            className={`relative w-full max-w-md h-80 rounded-3xl cursor-pointer perspective-1000 transition-transform duration-500 hover:scale-105`}
-            onClick={toggleFlip}
-          >
-            <div className={`w-full h-full absolute top-0 left-0 transition-all duration-500 preserve-3d shadow-2xl rounded-3xl ${flipped ? 'rotate-y-180' : ''}`}>
-              
-              {/* Front */}
-              <div className="absolute w-full h-full backface-hidden bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl flex flex-col items-center justify-center p-8 text-center shadow-inner">
-                <h2 className="text-8xl font-bold text-white drop-shadow-lg mb-6">{currentWord.cn}</h2>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); playAudio(currentWord.cn); }}
-                  className="p-3 bg-white/20 rounded-full hover:bg-white/30 transition-colors shadow-md"
-                >
-                  <Volume2 className="w-8 h-8 text-blue-200" />
-                </button>
-              </div>
-
-              {/* Back */}
-              <div className="absolute w-full h-full backface-hidden bg-indigo-900/40 backdrop-blur-xl border border-white/20 rounded-3xl flex flex-col items-center justify-center p-8 text-center rotate-y-180 shadow-inner">
-                <h3 className="text-3xl font-semibold text-blue-200 mb-4">{currentWord.py}</h3>
-                <div className="w-16 h-1 bg-white/20 rounded-full mb-6"></div>
-                <p className="text-2xl font-bold text-white mb-2">{currentWord.uz}</p>
-                <p className="text-lg text-gray-300 mb-1">{currentWord.ru}</p>
-                <p className="text-lg text-gray-400">{currentWord.en}</p>
-              </div>
-
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-6">
-            <button onClick={handlePrev} className="p-4 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full transition-all">
-              <ChevronLeft className="w-8 h-8 text-white" />
-            </button>
-            <div className="text-xl font-medium text-blue-100 bg-white/10 px-6 py-2 rounded-full backdrop-blur-sm">
-              {index + 1} / {WORDS.length}
-            </div>
-            <button onClick={handleNext} className="p-4 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full transition-all">
-              <ChevronRight className="w-8 h-8 text-white" />
-            </button>
-          </div>
-        </div>
-      );
-    };
-
-    const QuizTab = ({ questions, title }) => {
-      const [currentIdx, setCurrentIdx] = useState(0);
-      const [score, setScore] = useState(0);
-      const [showResult, setShowResult] = useState(false);
-      const [selectedOpt, setSelectedOpt] = useState(null);
-      const [finished, setFinished] = useState(false);
-
-      const handleSelect = (idx) => {
-        if (showResult) return;
-        setSelectedOpt(idx);
-        setShowResult(true);
-        if (idx === questions[currentIdx].correctIdx) {
-          setScore(score + 1);
-        }
-      };
-
-      const handleNext = () => {
-        if (currentIdx < questions.length - 1) {
-          setCurrentIdx(currentIdx + 1);
-          setShowResult(false);
-          setSelectedOpt(null);
-        } else {
-          setFinished(true);
-        }
-      };
-
-      const restart = () => {
-        setCurrentIdx(0);
-        setScore(0);
-        setShowResult(false);
-        setSelectedOpt(null);
-        setFinished(false);
-      };
-
-      if (finished) {
-        return (
-          <div className="flex flex-col items-center justify-center h-full animate-fade-in bg-white/5 backdrop-blur-lg p-10 rounded-3xl border border-white/10">
-            <Award className="w-24 h-24 text-yellow-400 mb-6 drop-shadow-xl" />
-            <h2 className="text-4xl font-bold text-white mb-4">Test Yakunlandi!</h2>
-            <p className="text-2xl text-blue-200 mb-8">Natija: {score} / {questions.length}</p>
-            <button onClick={restart} className="flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-xl transition-all shadow-lg hover:shadow-blue-500/50">
-              <RefreshCw className="w-6 h-6" /> Qayta boshlash
-            </button>
-          </div>
+    <script type="text/babel">
+        const VolumeIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
         );
-      }
+        const ArrowRightIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        );
+        const ArrowLeftIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        );
+        const CheckCircleIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        );
+        
+        const speakText = (text) => {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.85;
+                window.speechSynthesis.speak(utterance);
+            }
+        };
 
-      const q = questions[currentIdx];
+        const vocabData = [
+            { hanzi: "会议", pinyin: "huìyì", uz: "majlis", ru: "собрание", en: "meeting/conference" },
+            { hanzi: "经理", pinyin: "jīnglǐ", uz: "menejer", ru: "менеджер", en: "manager" },
+            { hanzi: "开会", pinyin: "kāihuì", uz: "majlis o'tkazmoq", ru: "проводить собрание", en: "have a meeting" },
+            { hanzi: "后天", pinyin: "hòutiān", uz: "indinga", ru: "послезавтра", en: "the day after tomorrow" },
+            { hanzi: "地点", pinyin: "dìdiǎn", uz: "joy, manzil", ru: "место", en: "place" },
+            { hanzi: "室", pinyin: "shì", uz: "xona", ru: "комната", en: "room" },
+            { hanzi: "发", pinyin: "fā", uz: "yubormoq", ru: "отправлять", en: "send" },
+            { hanzi: "笔记本(电脑)", pinyin: "bǐjìběn (diànnǎo)", uz: "noutbuk", ru: "ноутбук", en: "laptop" },
+            { hanzi: "或者", pinyin: "huòzhě", uz: "yoki (darak gapda)", ru: "или", en: "or (in statement)" },
+            { hanzi: "声音", pinyin: "shēngyīn", uz: "ovoz, sas", ru: "звук", en: "sound" },
+            { hanzi: "看来", pinyin: "kànlái", uz: "aftidan, ko'rinishidan", ru: "кажется", en: "it seems" },
+            { hanzi: "办法", pinyin: "bànfǎ", uz: "chora, yo'l", ru: "способ", en: "way/method" },
+            { hanzi: "解决", pinyin: "jiějué", uz: "hal qilmoq", ru: "решать", en: "solve" },
+            { hanzi: "只能", pinyin: "zhǐ néng", uz: "faqatgina", ru: "только", en: "can only" },
+            { hanzi: "别人", pinyin: "biérén", uz: "boshqalar", ru: "другие", en: "other people" },
+            { hanzi: "请假", pinyin: "qǐngjià", uz: "ruxsat so'ramoq", ru: "отпрашиваться", en: "ask for leave" },
+            { hanzi: "同事", pinyin: "tóngshì", uz: "hamkasb", ru: "коллега", en: "colleague" },
+            { hanzi: "休假", pinyin: "xiūjià", uz: "ta'tilga chiqmoq", ru: "брать отпуск", en: "take a vacation" },
+            { hanzi: "怕", pinyin: "pà", uz: "qo'rqmoq", ru: "бояться", en: "be afraid" },
+            { hanzi: "邮箱", pinyin: "yóuxiāng", uz: "elektron pochta", ru: "почтовый ящик", en: "mailbox" },
+            { hanzi: "老张", pinyin: "Lǎo Zhāng", uz: "Lao Chjan (ism)", ru: "Лао Чжан (имя)", en: "Lao Zhang (Name)" },
+            { hanzi: "愿意", pinyin: "yuànyì", uz: "rozi bo'lmoq", ru: "желать", en: "be willing" },
+            { hanzi: "城市", pinyin: "chéngshì", uz: "shahar", ru: "город", en: "city" },
+            { hanzi: "离开", pinyin: "líkāi", uz: "tark etmoq", ru: "покидать", en: "leave" },
+            { hanzi: "机会", pinyin: "jīhuì", uz: "imkoniyat", ru: "возможность", en: "opportunity" },
+            { hanzi: "生活", pinyin: "shēnghuó", uz: "hayot", ru: "жизнь", en: "life" },
+            { hanzi: "为", pinyin: "wèi", uz: "uchun", ru: "для", en: "for" },
+            { hanzi: "或", pinyin: "huò", uz: "yoki", ru: "или", en: "or" }
+        ];
 
-      return (
-        <div className="max-w-3xl mx-auto w-full animate-fade-in">
-          <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl shadow-2xl">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="text-xl font-medium text-blue-200">{title}</h3>
-              <span className="bg-white/10 px-4 py-1 rounded-full text-white font-bold">{currentIdx + 1} / {questions.length}</span>
-            </div>
-            
-            <h2 className="text-5xl font-bold text-center text-white mb-12 drop-shadow-md">{q.prompt}</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              {q.options.map((opt, idx) => {
-                let btnClass = "bg-white/10 hover:bg-white/20 text-white border-white/20";
-                if (showResult) {
-                  if (idx === q.correctIdx) btnClass = "bg-green-500/80 border-green-400 text-white";
-                  else if (idx === selectedOpt) btnClass = "bg-red-500/80 border-red-400 text-white";
-                  else btnClass = "bg-white/5 opacity-50 border-white/10 text-gray-400";
-                }
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleSelect(idx)}
-                    disabled={showResult}
-                    className={`p-6 text-xl rounded-2xl border backdrop-blur-sm transition-all text-left flex justify-between items-center ${btnClass}`}
-                  >
-                    <span>{opt}</span>
-                    {showResult && idx === q.correctIdx && <CheckCircle2 className="w-6 h-6 text-white" />}
-                    {showResult && idx === selectedOpt && idx !== q.correctIdx && <XCircle className="w-6 h-6 text-white" />}
-                  </button>
-                );
-              })}
-            </div>
+        const dialoguesData = [
+            {
+                title: "1-Matn: Ofisda (在办公室里)",
+                context: "Wang Yixue va Yang Tongle ish haqida gaplashmoqda.",
+                lines: [
+                    { speaker: "王一雪", hanzi: "今天下午经理不在，不开会了。", pinyin: "Jīntiān xiàwǔ jīnglǐ bù zài, bù kāihuì le.", uz: "Bugun tushdan keyin menejer yo'q, majlis bo'lmaydi.", ru: "Сегодня днем менеджера нет, собрания не будет.", en: "The manager is not here this afternoon, the meeting is cancelled." },
+                    { speaker: "杨同乐", hanzi: "那什么时候开会？", pinyin: "Nà shénme shíhou kāihuì?", uz: "Unda majlis qachon bo'ladi?", ru: "Тогда когда будет собрание?", en: "Then when is the meeting?" },
+                    { speaker: "王一雪", hanzi: "后天上午十点，会议地点换到第一会议室。我正要给大家发邮件。", pinyin: "Hòutiān shàngwǔ shí diǎn, huìyì dìdiǎn huàndào dì-yī huìyìshì. Wǒ zhèng yào gěi dàjiā fā yóujiàn.", uz: "Indinga ertalab soat o'nda, majlis joyi birinchi majlislar zaliga o'zgartirildi. Men hammaga xat yubormoqchi edim.", ru: "Послезавтра в 10 утра, место изменено на первую переговорную. Я как раз собиралась отправить всем письмо.", en: "The day after tomorrow at 10 AM, the meeting room is changed to Conference Room 1. I was just about to email everyone." },
+                    { speaker: "杨同乐", hanzi: "开会的时候，我们用会议室的电脑还是自己的笔记本电脑？", pinyin: "Kāihuì de shíhou, wǒmen yòng huìyìshì de diànnǎo háishì zìjǐ de bǐjìběn diànnǎo?", uz: "Majlis paytida biz majlislar zali kompyuteridan foydalanamizmi yoki o'zimizning noutbukdanmi?", ru: "Во время собрания мы используем компьютер в переговорной или свои собственные ноутбуки?", en: "During the meeting, do we use the conference room computer or our own laptops?" },
+                    { speaker: "王一雪", hanzi: "会议室的电脑或者自己的电脑都可以。", pinyin: "Huìyìshì de diànnǎo huòzhě zìjǐ de diànnǎo dōu kěyǐ.", uz: "Majlislar zali kompyuteri yoki o'zingizniki bo'lsa ham bo'laveradi.", ru: "Компьютер переговорной или свой собственный - оба подойдут.", en: "The conference room computer or your own computer is fine." },
+                    { speaker: "杨同乐", hanzi: "那到时候咱们早点儿过去，你帮我把电脑接好吧。", pinyin: "Nà dào shíhou zánmen zǎodiǎnr guòqù, nǐ bāng wǒ bǎ diànnǎo jiē hǎo ba.", uz: "Unda o'sha paytda biz ertaroq boramiz, kompyuterni ulashda menga yordam berasiz.", ru: "Тогда давайте пойдем пораньше, ты поможешь мне подключить компьютер.", en: "Then let's go there a bit earlier, you can help me set up the computer." }
+                ]
+            },
+            {
+                title: "2-Matn: Majlislar zalida (在会议室)",
+                context: "Wang Yixue va Yang Tongle majlisga tayyorgarlik ko'rmoqda.",
+                lines: [
+                    { speaker: "王一雪", hanzi: "电脑接好了吗？", pinyin: "Diànnǎo jiē hǎo le ma?", uz: "Kompyuter ulandimi?", ru: "Компьютер подключен?", en: "Is the computer set up?" },
+                    { speaker: "杨同乐", hanzi: "已经接好了，您开机看看有没有问题。", pinyin: "Yǐjīng jiē hǎo le, nín kāijī kànkan yǒu méiyǒu wèntí.", uz: "Qachonki ulandi, yoqib ko'ring muammo yo'qmi.", ru: "Уже подключил, включите, посмотрите, нет ли проблем.", en: "It's already set up, please turn it on and see if there's any problem." },
+                    { speaker: "王一雪", hanzi: "现在什么都看不见。", pinyin: "Xiànzài shénme dōu kàn bù jiàn.", uz: "Hozir hech narsa ko'rinmayapti.", ru: "Сейчас ничего не видно.", en: "I can't see anything right now." },
+                    { speaker: "杨同乐", hanzi: "我检查一下哪里出问题了……您再试一下。", pinyin: "Wǒ jiǎnchá yíxià nǎlǐ chū wèntí le…… Nín zài shì yíxià.", uz: "Men qayerda muammo chiqqanini tekshirib ko'ray... Yana bir bor urinib ko'ring.", ru: "Я проверю, в чем проблема... Попробуйте еще раз.", en: "Let me check what went wrong... Try it again." },
+                    { speaker: "王一雪", hanzi: "看见了，但是听不见声音。", pinyin: "Kàn jiàn le, dànshì tīng bù jiàn shēngyīn.", uz: "Ko'rdim, lekin ovoz eshitilmayapti.", ru: "Вижу, но звука не слышно.", en: "I can see it, but I can't hear the sound." },
+                    { speaker: "杨同乐", hanzi: "现在呢？", pinyin: "Xiànzài ne?", uz: "Hozir-chi?", ru: "А сейчас?", en: "What about now?" },
+                    { speaker: "王一雪", hanzi: "听得见声音，但是声音有点儿小，听不清楚。", pinyin: "Tīng de jiàn shēngyīn, dànshì shēngyīn yǒudiǎnr xiǎo, tīng bù qīngchǔ.", uz: "Ovoz eshitilyapti, lekin sal past, aniq eshitilmayapti.", ru: "Звук слышен, но он немного тихий, слышно неясно.", en: "I can hear the sound, but it's a bit small, can't hear clearly." },
+                    { speaker: "杨同乐", hanzi: "看来我没办法解决这个问题，只能找别人来帮帮忙了。", pinyin: "Kànlái wǒ méi bànfǎ jiějué zhège wèntí, zhǐ néng zhǎo biérén lái bāngbang máng le.", uz: "Aftidan men bu muammoni hal qila olmayman, faqatgina yordam uchun boshqalarni chaqirishga to'g'ri keladi.", ru: "Кажется, я не могу решить эту проблему, придется просить кого-то еще помочь.", en: "It seems I have no way to solve this problem, I can only find someone else to help." }
+                ]
+            },
+            {
+                title: "3-Matn: Ofisda (在办公室里)",
+                context: "Wang Yixue va Yang Tongle suhbatlashmoqda.",
+                lines: [
+                    { speaker: "王一雪", hanzi: "同乐，你看见老张了吗？", pinyin: "Tónglè, nǐ kànjiàn Lǎo Zhāng le ma?", uz: "Tongle, Lao Chjanni ko'rdingizmi?", ru: "Тунлэ, ты видел Лао Чжана?", en: "Tongle, did you see Lao Zhang?" },
+                    { speaker: "杨同乐", hanzi: "老张没来。他说家里有点儿事，所以请假了。", pinyin: "Lǎo Zhāng méi lái. Tā shuō jiālǐ yǒudiǎnr shì, suǒyǐ qǐngjià le.", uz: "Lao Chjan kelmadi. U uyida ishlari borligini aytdi, shuning uchun javob so'radi.", ru: "Лао Чжан не пришел. Он сказал, что дома дела, поэтому отпросился.", en: "Lao Zhang didn't come. He said he has some family matters, so he asked for leave." },
+                    { speaker: "王一雪", hanzi: "好几个同事都休假了，开会前这么多工作我怕干不完。", pinyin: "Hǎo jǐ gè tóngshì dōu xiūjià le, kāihuì qián zhème duō gōngzuò wǒ pà gàn bù wán.", uz: "Bir nechta hamkasblar ta'tilga chiqishdi, majlisgacha shuncha ishni tugata olmaslikdan qo'rqaman.", ru: "Несколько коллег в отпуске, я боюсь, что не успею закончить столько работы до собрания.", en: "Several colleagues are on vacation, I'm afraid I can't finish so much work before the meeting." },
+                    { speaker: "杨同乐", hanzi: "十二点多了，咱们先去吃饭吧。吃完饭，我跟您一起把这些工作做完。", pinyin: "Shí'èr diǎn duō le, zánmen xiān qù chīfàn ba. Chī wán fàn, wǒ gēn nín yìqǐ bǎ zhèxiē gōngzuò zuò wán.", uz: "O'n ikkidan o'tdi, keling, oldin ovqatlanib olaylik. Ovqatdan keyin men siz bilan bu ishlarni tugataman.", ru: "Уже больше двенадцати, давай сначала поедим. После еды я помогу вам закончить эту работу.", en: "It's past twelve, let's go eat first. After eating, I'll help you finish this work together." },
+                    { speaker: "王一雪", hanzi: "你先去吃，我想再干一会儿。明天开会前要发到公司的邮箱里。", pinyin: "Nǐ xiān qù chī, wǒ xiǎng zài gàn yíhuìr. Míngtiān kāihuì qián yào fā dào gōngsī de yóuxiāng lǐ.", uz: "Siz boravering, men yana biroz ishlamoqchiman. Ertaga majlisdan oldin kompaniya pochtasiga yuborish kerak.", ru: "Ты иди поешь сначала, я хочу еще поработать немного. Завтра перед собранием нужно отправить на почту компании.", en: "You go eat first, I want to work a bit more. It needs to be sent to the company mailbox before tomorrow's meeting." },
+                    { speaker: "杨同乐", hanzi: "您没看到邮件吗？经理还没回来呢，下周才能开会。", pinyin: "Nín méi kàndào yóujiàn ma? Jīnglǐ hái méi huílái ne, xià zhōu cái néng kāihuì.", uz: "Xatni ko'rmadingizmi? Menejer hali qaytmadi, faqat kelasi hafta majlis bo'ladi.", ru: "Вы не видели письмо? Менеджер еще не вернулся, собрание будет только на следующей неделе.", en: "Didn't you see the email? The manager hasn't returned yet, the meeting won't be until next week." },
+                    { speaker: "王一雪", hanzi: "那不着急了。走，吃饭去。", pinyin: "Nà bù zháojí le. Zǒu, chīfàn qù.", uz: "Unda shoshilinch emas. Ketdik, ovqatlanamiz.", ru: "Тогда не к спеху. Пойдем, поедим.", en: "Then there's no rush. Let's go eat." }
+                ]
+            },
+            {
+                title: "4-Matn: Kundalik (日记)",
+                context: "Wang Yixuening kundaligi.",
+                lines: [
+                    { speaker: "日记", hanzi: "前几天，上海的同事来北京了。一起吃饭时，他们跟我说最近有不少同事去上海工作了，问我愿意不愿意也去上海。", pinyin: "Qián jǐ tiān, Shànghǎi de tóngshì lái Běijīng le. Yìqǐ chīfàn shí, tāmen gēn wǒ shuō zuìjìn yǒu bù shǎo tóngshì qù Shànghǎi gōngzuò le, wèn wǒ yuànyì bu yuànyì yě qù Shànghǎi.", uz: "Bir necha kun oldin Shanxaydagi hamkasblar Pekinga kelishdi. Birga ovqatlanayotganda, ular yaqinda ko'plab hamkasblar Shanxayga ishlashga ketganini aytishdi va men ham Shanxayga borishni xohlaymanmi deb so'rashdi.", ru: "Пару дней назад коллеги из Шанхая приехали в Пекин. За совместным ужином они сказали мне, что в последнее время немало коллег уехали работать в Шанхай, и спросили, хочу ли я тоже.", en: "A few days ago, colleagues from Shanghai came to Beijing. While eating together, they told me recently many colleagues went to work in Shanghai, and asked if I was willing to go too." },
+                    { speaker: "日记", hanzi: "我是这样想的：现在丈夫和孩子都在北京，刘明的工作很忙，小雪和小明也还小，我去别的城市工作就要离开他们。", pinyin: "Wǒ shì zhèyàng xiǎng de: xiànzài zhàngfu hé háizi dōu zài Běijīng, Liú Míng de gōngzuò hěn máng, Xiǎoxuě hé Xiǎomíng yě hái xiǎo, wǒ qù biéde chéngshì gōngzuò jiù yào líkāi tāmen.", uz: "Men shunday o'ylayman: hozir erim va farzandlarim hammalari Pekinda, Liu Mingning ishi juda ko'p, Xiaoxue va Xiaoming hali yosh, agar men boshqa shaharga ishga borsam, ularni tark etishimga to'g'ri keladi.", ru: "Я думаю так: сейчас муж и дети все в Пекине, у Лю Мина много работы, Сяо Сюэ и Сяо Мин еще маленькие, если я поеду работать в другой город, мне придется оставить их.", en: "This is what I think: now my husband and kids are all in Beijing, Liu Ming's work is very busy, Xiaoxue and Xiaoming are still young, if I go to work in another city I have to leave them." },
+                    { speaker: "日记", hanzi: "虽然去上海可能会有更好的机会，但是对我来说，生活也很重要，我不愿意为工作或学习离开家人。", pinyin: "Suīrán qù Shànghǎi kěnéng huì yǒu gèng hǎo de jīhuì, dànshì duì wǒ lái shuō, shēnghuó yě hěn zhòngyào, wǒ bú yuànyì wèi gōngzuò huò xuéxí líkāi jiārén.", uz: "Garchi Shanxayga borish yaxshiroq imkoniyatlarga ega bo'lishi mumkin bo'lsa-da, lekin men uchun hayot ham juda muhim, men ish yoki o'qish uchun oilamni tark etishni xohlamayman.", ru: "Хотя поездка в Шанхай может дать лучшие возможности, но для меня жизнь тоже очень важна, я не хочу оставлять семью ради работы или учебы.", en: "Although going to Shanghai might offer better opportunities, to me, life is also very important. I am not willing to leave my family for work or study." }
+                ]
+            }
+        ];
 
-            {showResult && (
-              <div className="flex justify-end animate-fade-in">
-                <button onClick={handleNext} className="px-8 py-3 bg-blue-500 hover:bg-blue-400 text-white rounded-full font-bold text-lg transition-all shadow-lg flex items-center gap-2">
-                  Keyingisi <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    };
+        const grammarData = [
+            {
+                title: "1. '还是' va '或者' (hái shì / huò zhě) solishtiruv",
+                explanation: {
+                    uz: "Ikkisi ham 'yoki' degan ma'noni bildiradi. '还是' odatda so'roq gaplarda tanlovni bildirish uchun, '或者' esa asosan darak gaplarda (tanlovni tasdiqlashda) ishlatiladi.",
+                    ru: "Оба означают 'или'. '还是' обычно используется в вопросительных предложениях, а '或者' - в утвердительных.",
+                    en: "Both mean 'or'. '还是' is usually used in questions for alternatives, while '或者' is used in statements."
+                },
+                examples: [
+                    { hanzi: "我们用会议室的电脑还是自己的电脑？", pinyin: "Wǒmen yòng huìyìshì de diànnǎo háishì zìjǐ de diànnǎo?", uz: "Biz majlislar zali kompyuteridan foydalanamizmi yoki o'zimiznikidanmi?" },
+                    { hanzi: "会议室的电脑或者自己的电脑都可以。", pinyin: "Huìyìshì de diànnǎo huòzhě zìjǐ de diànnǎo dōu kěyǐ.", uz: "Majlislar zali kompyuteri yoki o'zingizniki bo'lsa ham bo'laveradi." }
+                ]
+            },
+            {
+                title: "2. '看来' (kànlái) qat'iy iborasi",
+                explanation: {
+                    uz: "'看来' (aftidan) so'zlashuvchining kuzatish va mulohazasi asosida chiqarilgan xulosa yoki taxminni bildiradi.",
+                    ru: "'看来' (кажется) выражает вывод или предположение говорящего на основе наблюдения.",
+                    en: "'看来' (it seems) introduces a conclusion or inference based on observation."
+                },
+                examples: [
+                    { hanzi: "看来我没办法解决这个问题。", pinyin: "Kànlái wǒ méi bànfǎ jiějué zhège wèntí.", uz: "Aftidan, men bu muammoni hal qila olmayman." },
+                    { hanzi: "天阴得很，看来要下雨了。", pinyin: "Tiān yīn de hěn, kànlái yào xiàyǔ le.", uz: "Havo juda bulutli, aftidan yomg'ir yog'adi." }
+                ]
+            },
+            {
+                title: "3. '把' (bǎ) so'zi bilan tuzilgan gaplar",
+                explanation: {
+                    uz: "'把' obyekti ustida bajarilgan harakatning natijasini ko'rsatish uchun ishlatiladi. Qurilmasi: Ega + 把 + To'ldiruvchi + Fe'l + Natija.",
+                    ru: "Предложение с '把' указывает на результат действия над объектом.",
+                    en: "The '把' sentence indicates the result of an action on a definite object."
+                },
+                examples: [
+                    { hanzi: "我跟你一起把这些工作做完。", pinyin: "Wǒ gēn nǐ yìqǐ bǎ zhèxiē gōngzuò zuò wán.", uz: "Men siz bilan birga bu ishlarni tugataman." },
+                    { hanzi: "妈妈把衣服洗干净了。", pinyin: "Māma bǎ yīfu xǐ gānjìng le.", uz: "Oyi kiyimlarni yuvib tozaladi." }
+                ]
+            },
+            {
+                title: "4. '对……来说' (duì... lái shuō) strukturasi",
+                explanation: {
+                    uz: "Bu struktura biron bir fikr, tuyg'u yoki holat kimga tegishli ekanligini (kimning nazdida ekanligini) bildiradi.",
+                    ru: "Эта структура указывает, к кому относится точка зрения или ситуация ('что касается...').",
+                    en: "This structure indicates to whom a viewpoint or situation applies ('as for...')."
+                },
+                examples: [
+                    { hanzi: "对我来说，生活也很重要。", pinyin: "Duì wǒ lái shuō, shēnghuó yě hěn zhòngyào.", uz: "Men uchun hayot ham juda muhim." },
+                    { hanzi: "对孩子来说，玩也是一种学习。", pinyin: "Duì háizi lái shuō, wán yě shì yì zhǒng xuéxí.", uz: "Bolalar uchun o'yin ham bir turdagi o'rganishdir." }
+                ]
+            }
+        ];
 
-    const DialogueTab = () => {
-      return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-10">
-          {DIALOGUES.map((dialogue, dIdx) => (
-            <div key={dIdx} className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 shadow-xl">
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-3 mb-6 border-b border-white/10 pb-4">
-                <MessageCircle className="w-8 h-8 text-blue-300 flex-shrink-0" />
-                <h3 className="text-xl md:text-2xl font-bold text-white">{dialogue.title || `Muloqot ${dIdx + 1}`}</h3>
-              </div>
-              <div className="space-y-6">
-                {dialogue.lines.map((line, lIdx) => (
-                  <div key={lIdx} className="flex flex-col md:flex-row gap-4">
-                    <div className="flex-shrink-0 px-4 py-2 md:h-12 bg-blue-600/50 rounded-2xl flex items-center justify-center text-sm md:text-base font-bold text-white shadow-inner whitespace-nowrap w-max">
-                      {line.speaker}
+        const grammarQuizData = [
+            { q: "我们去吃中餐( )西餐？", options: ["还是", "或者"], answer: "还是" },
+            { q: "咖啡( )茶都可以。", options: ["还是", "或者"], answer: "或者" },
+            { q: "( )今天会下雨，天太黑了。", options: ["看来", "办法"], answer: "看来" },
+            { q: "他没来，( )是生病了。", options: ["看来", "只能"], answer: "看来" },
+            { q: "请你( )电脑打开。", options: ["被", "把"], answer: "把" },
+            { q: "妈妈( )衣服洗干净了。", options: ["把", "或者"], answer: "把" },
+            { q: "( )我来说，健康最重要。", options: ["对", "为"], answer: "对" },
+            { q: "我( )大家准备了礼物。", options: ["对", "为"], answer: "为" },
+            { q: "你喜欢红色的( )蓝色的？", options: ["或者", "还是"], answer: "还是" },
+            { q: "今天( )明天，我都有时间。", options: ["或者", "还是"], answer: "或者" },
+            { q: "下雪了，我们( )呆在家里。", options: ["只能", "看来"], answer: "只能" },
+            { q: "请你帮我( )这封信寄了。", options: ["把", "解决"], answer: "把" },
+            { q: "( )老年人来说，早睡早起很好。", options: ["对", "为"], answer: "对" },
+            { q: "他一直没接电话，( )在开会。", options: ["看来", "或者"], answer: "看来" },
+            { q: "遇到问题，我们要想( )解决。", options: ["办法", "或者"], answer: "办法" }
+        ];
+
+        const fillBlanksData = [
+            { q: "下午两点我们要去(_____)室。", ans: "会议", opts: ["会议", "经理", "或者", "声音"] },
+            { q: "(_____)不在，他去上海了。", ans: "经理", opts: ["办法", "经理", "看来", "别人"] },
+            { q: "我们明天上午十点(_____)。", ans: "开会", opts: ["开会", "解决", "离开", "愿意"] },
+            { q: "明天不去，(_____)去。", ans: "后天", opts: ["后天", "地点", "城市", "室"] },
+            { q: "考试的(_____)在学校的第一教室。", ans: "地点", opts: ["邮箱", "笔记本", "地点", "同事"] },
+            { q: "请到我的办公(_____)来一下。", ans: "室", opts: ["室", "机会", "或者", "声音"] },
+            { q: "麻烦你给我(_____)一个邮件。", ans: "发", opts: ["发", "怕", "解决", "请假"] },
+            { q: "我新买了一个(_____)电脑。", ans: "笔记本(电脑)", opts: ["笔记本(电脑)", "城市", "声音", "办法"] },
+            { q: "喝茶(_____)喝咖啡都可以。", ans: "或者", opts: ["或者", "还是", "或", "看来"] },
+            { q: "你的(_____)太小了，我听不见。", ans: "声音", opts: ["声音", "生活", "别人", "同事"] },
+            { q: "(_____)天要下雨了。", ans: "看来", opts: ["看来", "只能", "办法", "解决"] },
+            { q: "遇到困难要自己想(_____)。", ans: "办法", opts: ["办法", "机会", "生活", "室"] },
+            { q: "这个问题很难(_____)。", ans: "解决", opts: ["发", "解决", "开会", "休假"] },
+            { q: "下雨了，我们(_____)在家看电视。", ans: "只能", opts: ["只能", "愿意", "怕", "为"] },
+            { q: "不要总是麻烦(_____)。", ans: "别人", opts: ["别人", "同事", "老张", "经理"] },
+            { q: "他生病了，所以向老师(_____)了。", ans: "请假", opts: ["请假", "休假", "离开", "发"] },
+            { q: "我跟公司的(_____)关系很好。", ans: "同事", opts: ["别人", "同事", "城市", "机会"] },
+            { q: "他下个月去海南(_____)。", ans: "休假", opts: ["休假", "开会", "请假", "解决"] },
+            { q: "小女孩很(_____)黑。", ans: "怕", opts: ["愿意", "怕", "只能", "发"] },
+            { q: "请把文件发到我的(_____)里。", ans: "邮箱", opts: ["邮箱", "笔记本", "地点", "室"] },
+            { q: "今天(_____)没来上班。", ans: "老张", opts: ["或者", "老张", "别人", "看来"] },
+            { q: "你(_____)去别的城市工作吗？", ans: "愿意", opts: ["愿意", "怕", "只能", "离开"] },
+            { q: "北京是一个美丽的(_____)。", ans: "城市", opts: ["城市", "地点", "机会", "生活"] },
+            { q: "他明天要(_____)这里，去美国。", ans: "离开", opts: ["解决", "离开", "休假", "发"] },
+            { q: "这是一个很好的工作(_____)，别错过。", ans: "机会", opts: ["生活", "办法", "机会", "邮箱"] },
+            { q: "这里的(_____)条件很不错。", ans: "生活", opts: ["声音", "城市", "生活", "室"] },
+            { q: "这是我特意(_____)你准备的。", ans: "为", opts: ["为", "或", "对", "把"] },
+            { q: "今天(_____)明天都可以来找我。", ans: "或", opts: ["或", "或者", "还是", "为"] }
+        ];
+
+        const shuffle = (array) => {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        };
+
+        const Flashcards = () => {
+            const [index, setIndex] = React.useState(0);
+            const [isFlipped, setIsFlipped] = React.useState(false);
+
+            const card = vocabData[index];
+
+            const nextCard = () => {
+                setIsFlipped(false);
+                setTimeout(() => setIndex((prev) => (prev + 1) % vocabData.length), 150);
+            };
+
+            const prevCard = () => {
+                setIsFlipped(false);
+                setTimeout(() => setIndex((prev) => (prev - 1 + vocabData.length) % vocabData.length), 150);
+            };
+
+            return (
+                <div className="flex flex-col items-center justify-center py-10 px-4 min-h-[400px]">
+                    <div className="text-sm font-semibold mb-4 text-emerald-300">
+                        {index + 1} / {vocabData.length}
                     </div>
-                    <div className="flex-1 bg-white/5 p-4 rounded-2xl md:rounded-tl-none border border-white/5">
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-xl md:text-2xl font-bold text-white">{line.cn}</span>
-                        <button onClick={() => playAudio(line.cn)} className="text-blue-300 hover:text-blue-100 transition-colors">
-                          <Volume2 className="w-5 h-5" />
+                    
+                    <div className="relative w-full max-w-md h-80 perspective-1000 cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
+                        <div className={`w-full h-full absolute top-0 left-0 transition-transform-duration-500 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                            
+                            {/* Front */}
+                            <div className="absolute w-full h-full backface-hidden glass-panel rounded-3xl flex flex-col items-center justify-center p-8 shadow-2xl hover:shadow-cyan-500/20 transition-all">
+                                <h2 className="text-7xl font-bold mb-4 zh-text text-white drop-shadow-md">{card.hanzi}</h2>
+                            </div>
+
+                            {/* Back */}
+                            <div className="absolute w-full h-full backface-hidden rotate-y-180 glass-panel rounded-3xl flex flex-col items-center justify-center p-8 shadow-2xl bg-slate-800/80">
+                                <p className="text-3xl font-semibold mb-4 text-cyan-300 drop-shadow">{card.pinyin}</p>
+                                <div className="space-y-2 text-center text-lg">
+                                    <p><span className="text-gray-400 text-sm uppercase tracking-widest">UZ:</span> {card.uz}</p>
+                                    <p><span className="text-gray-400 text-sm uppercase tracking-widest">RU:</span> {card.ru}</p>
+                                    <p><span className="text-gray-400 text-sm uppercase tracking-widest">EN:</span> {card.en}</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-6 mt-10">
+                        <button onClick={(e) => { e.stopPropagation(); prevCard(); }} className="p-4 rounded-full bg-white/10 hover:bg-white/20 transition backdrop-blur">
+                            <ArrowLeftIcon />
                         </button>
-                      </div>
-                      <div className="text-md md:text-lg text-blue-200 mb-3">{line.py}</div>
-                      <div className="space-y-1">
-                        <div className="text-md text-green-200 font-medium">{line.uz}</div>
-                        <div className="text-sm text-gray-300">{line.ru}</div>
-                        <div className="text-sm text-gray-400">{line.en}</div>
-                      </div>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); speakText(card.hanzi); }} 
+                            className="p-5 rounded-full bg-cyan-500 hover:bg-cyan-400 text-white shadow-[0_0_20px_rgba(6,182,212,0.5)] transition hover:scale-110"
+                        >
+                            <VolumeIcon />
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); nextCard(); }} className="p-4 rounded-full bg-white/10 hover:bg-white/20 transition backdrop-blur">
+                            <ArrowRightIcon />
+                        </button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      );
-    };
+                </div>
+            );
+        };
 
-    const GrammarTab = () => {
-      return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-10">
-          {GRAMMAR_POINTS.map((point, idx) => (
-            <div key={idx} className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 shadow-xl">
-              <div className="flex items-center gap-3 mb-4">
-                <BookOpen className="w-8 h-8 text-purple-300" />
-                <h3 className="text-3xl font-bold text-white">{point.title}</h3>
-              </div>
-              <div className="bg-white/5 p-5 rounded-2xl mb-6 border border-white/5">
-                <p className="text-lg text-green-200 font-medium mb-2">{point.explain.uz}</p>
-                <p className="text-md text-gray-300 mb-1">{point.explain.ru}</p>
-                <p className="text-md text-gray-400">{point.explain.en}</p>
-              </div>
-              
-              <h4 className="text-xl font-bold text-blue-200 mb-4 pl-2 border-l-4 border-blue-400">Misollar (Examples):</h4>
-              <div className="space-y-4">
-                {point.examples.map((ex, eIdx) => (
-                  <div key={eIdx} className="bg-black/20 p-4 rounded-xl flex items-start gap-3">
-                    <button onClick={() => playAudio(ex.cn)} className="mt-1 text-blue-300 hover:text-blue-100">
-                      <PlayCircle className="w-6 h-6" />
-                    </button>
-                    <div>
-                      <p className="text-2xl font-bold text-white mb-1">{ex.cn}</p>
-                      <p className="text-lg text-blue-200 mb-1">{ex.py}</p>
-                      <p className="text-md text-green-200">{ex.uz}</p>
+        const Dialogues = () => {
+            return (
+                <div className="max-w-4xl mx-auto space-y-8 p-4 pb-12">
+                    {dialoguesData.map((dialogue, i) => (
+                        <div key={i} className="glass-panel rounded-2xl overflow-hidden shadow-xl border-t border-white/20">
+                            <div className="bg-slate-800/50 p-6 border-b border-white/10">
+                                <h3 className="text-2xl font-bold text-cyan-300 zh-text">{dialogue.title}</h3>
+                                <p className="text-slate-400 text-sm mt-1">{dialogue.context}</p>
+                            </div>
+                            <div className="p-6 space-y-6">
+                                {dialogue.lines.map((line, j) => (
+                                    <div key={j} className="flex gap-4">
+                                        <div className="flex-shrink-0 w-14 font-semibold text-purple-300 text-sm pt-1">
+                                            {line.speaker}
+                                        </div>
+                                        <div className="flex-1 space-y-1">
+                                            <div className="flex items-start justify-between gap-4">
+                                                <p className="text-2xl zh-text leading-snug">{line.hanzi}</p>
+                                                <button onClick={() => speakText(line.hanzi)} className="text-gray-400 hover:text-cyan-400 transition flex-shrink-0 mt-1">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                                                </button>
+                                            </div>
+                                            <p className="text-emerald-400 text-lg">{line.pinyin}</p>
+                                            <div className="bg-slate-900/50 p-3 rounded-lg text-sm mt-2 space-y-1 border border-white/5">
+                                                <p><span className="text-slate-500 mr-2 text-xs">UZ:</span>{line.uz}</p>
+                                                <p><span className="text-slate-500 mr-2 text-xs">RU:</span>{line.ru}</p>
+                                                <p><span className="text-slate-500 mr-2 text-xs">EN:</span>{line.en}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const Grammar = () => {
+            return (
+                <div className="max-w-4xl mx-auto space-y-8 p-4 pb-12">
+                    {grammarData.map((item, i) => (
+                        <div key={i} className="glass-panel rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
+                            {/* Decorative element */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-bl-full pointer-events-none"></div>
+                            
+                            <h3 className="text-2xl font-bold text-emerald-300 mb-6">{item.title}</h3>
+                            
+                            <div className="grid md:grid-cols-3 gap-4 mb-8">
+                                <div className="bg-slate-800/40 p-4 rounded-xl border border-white/5">
+                                    <div className="text-xs text-slate-500 mb-1 uppercase tracking-wider">O'zbekcha</div>
+                                    <p className="text-sm leading-relaxed">{item.explanation.uz}</p>
+                                </div>
+                                <div className="bg-slate-800/40 p-4 rounded-xl border border-white/5">
+                                    <div className="text-xs text-slate-500 mb-1 uppercase tracking-wider">Русский</div>
+                                    <p className="text-sm leading-relaxed">{item.explanation.ru}</p>
+                                </div>
+                                <div className="bg-slate-800/40 p-4 rounded-xl border border-white/5">
+                                    <div className="text-xs text-slate-500 mb-1 uppercase tracking-wider">English</div>
+                                    <p className="text-sm leading-relaxed">{item.explanation.en}</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h4 className="font-semibold text-slate-300 border-b border-white/10 pb-2 mb-4">Misollar / Примеры / Examples:</h4>
+                                {item.examples.map((ex, j) => (
+                                    <div key={j} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white/5 p-4 rounded-xl hover:bg-white/10 transition">
+                                        <button onClick={() => speakText(ex.hanzi)} className="p-2 bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500 hover:text-white rounded-full transition">
+                                            <VolumeIcon />
+                                        </button>
+                                        <div className="flex-1">
+                                            <p className="text-xl zh-text font-medium">{ex.hanzi}</p>
+                                            <p className="text-cyan-300 text-sm mt-1">{ex.pinyin}</p>
+                                            <p className="text-slate-400 mt-1 text-sm">{ex.uz}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const VocabQuiz = () => {
+            const [shuffledQuestions, setShuffledQuestions] = React.useState([]);
+            const [currentQ, setCurrentQ] = React.useState(0);
+            const [score, setScore] = React.useState(0);
+            const [showResult, setShowResult] = React.useState(false);
+            const [selectedOpt, setSelectedOpt] = React.useState(null);
+
+            React.useEffect(() => {
+                startQuiz();
+            }, []);
+
+            const startQuiz = () => {
+                const qs = vocabData.map(v => {
+                    let incorrect = vocabData.filter(x => x.uz !== v.uz).sort(() => 0.5 - Math.random()).slice(0, 3).map(x => x.uz);
+                    return { question: v.hanzi, answer: v.uz, options: shuffle([v.uz, ...incorrect]) };
+                });
+                setShuffledQuestions(shuffle(qs));
+                setCurrentQ(0);
+                setScore(0);
+                setShowResult(false);
+                setSelectedOpt(null);
+            };
+
+            const handleAnswer = (opt) => {
+                if (selectedOpt) return;
+                setSelectedOpt(opt);
+                
+                const isCorrect = opt === shuffledQuestions[currentQ].answer;
+                if (isCorrect) setScore(s => s + 1);
+
+                setTimeout(() => {
+                    if (currentQ + 1 < shuffledQuestions.length) {
+                        setCurrentQ(c => c + 1);
+                        setSelectedOpt(null);
+                    } else {
+                        setShowResult(true);
+                    }
+                }, 1000);
+            };
+
+            if (shuffledQuestions.length === 0) return null;
+
+            if (showResult) {
+                return (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <CheckCircleIcon />
+                        <h2 className="text-4xl font-bold mt-4 mb-2">Test tugadi!</h2>
+                        <p className="text-2xl text-cyan-300 mb-8">Natijangiz: {score} / {shuffledQuestions.length}</p>
+                        <button onClick={startQuiz} className="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-full font-semibold shadow-lg transition">Qayta boshlash</button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      );
-    };
+                );
+            }
 
-    const App = () => {
-      const [activeTab, setActiveTab] = useState('flashcards');
+            const q = shuffledQuestions[currentQ];
 
-      const tabs = [
-        { id: 'flashcards', label: 'Fleshkarta', icon: <FileText className="w-5 h-5"/> },
-        { id: 'vocabTest', label: "Lug'at Testi", icon: <CheckSquare className="w-5 h-5"/> },
-        { id: 'dialogue', label: 'Muloqot', icon: <MessageCircle className="w-5 h-5"/> },
-        { id: 'grammar', label: 'Grammatika', icon: <BookOpen className="w-5 h-5"/> },
-        { id: 'grammarTest', label: 'Grammatika Testi', icon: <CheckSquare className="w-5 h-5"/> },
-        { id: 'fillBlank', label: "So'zlarni to'ldirish", icon: <Edit3 className="w-5 h-5"/> }
-      ];
+            return (
+                <div className="max-w-2xl mx-auto py-10 px-4">
+                    <div className="flex justify-between items-center mb-6 text-sm text-slate-400">
+                        <span>Savol {currentQ + 1} / {shuffledQuestions.length}</span>
+                        <span>To'g'ri: {score}</span>
+                    </div>
+                    
+                    <div className="glass-panel p-10 rounded-3xl text-center shadow-2xl mb-8 border border-cyan-500/30">
+                        <h2 className="text-6xl font-bold zh-text drop-shadow-lg">{q.question}</h2>
+                    </div>
 
-      return (
-        <div className="min-h-screen text-white font-sans">
-          
-          {/* Header */}
-          <header className="bg-white/5 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 text-center">
-              <h1 className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-2 drop-shadow-sm">
-                HSK 3 - 11 Dars
-              </h1>
-              <p className="text-lg text-blue-200 font-medium tracking-wide">
-                Dilfuza Kāng lǎo shī bilan xitoy tilini o'rganmiz
-              </p>
-            </div>
-            
-            {/* Navigation */}
-            <div className="max-w-7xl mx-auto px-2 pb-4 overflow-x-auto no-scrollbar">
-              <div className="flex justify-start md:justify-center space-x-2 w-max mx-auto px-2">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap
-                      ${activeTab === tab.id 
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50 border border-blue-400/50' 
-                        : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white border border-transparent'
-                      }`}
-                  >
-                    {tab.icon} {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </header>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {q.options.map((opt, i) => {
+                            let btnClass = "p-5 rounded-xl text-lg font-medium transition shadow-lg border ";
+                            if (!selectedOpt) {
+                                btnClass += "bg-white/10 hover:bg-white/20 border-white/10";
+                            } else {
+                                if (opt === q.answer) {
+                                    btnClass += "bg-emerald-500/80 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.5)]";
+                                } else if (opt === selectedOpt) {
+                                    btnClass += "bg-red-500/80 border-red-400";
+                                } else {
+                                    btnClass += "bg-white/5 border-white/5 opacity-50";
+                                }
+                            }
 
-          {/* Main Content Area */}
-          <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 min-h-[70vh]">
-            {activeTab === 'flashcards' && <FlashcardTab />}
-            {activeTab === 'vocabTest' && <QuizTab questions={VOCAB_TEST} title="Lug'at Testi (So'z ma'nosini toping)" />}
-            {activeTab === 'dialogue' && <DialogueTab />}
-            {activeTab === 'grammar' && <GrammarTab />}
-            {activeTab === 'grammarTest' && <QuizTab questions={GRAMMAR_TEST} title="Grammatika Testi (To'g'ri javobni tanlang)" />}
-            {activeTab === 'fillBlank' && <QuizTab questions={FILL_BLANK_TEST} title="So'zlarni to'ldirish (Bo'sh joyni to'ldiring)" />}
-          </main>
+                            return (
+                                <button key={i} onClick={() => handleAnswer(opt)} className={btnClass} disabled={!!selectedOpt}>
+                                    {opt}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
 
-          {/* Footer */}
-          <footer className="border-t border-white/10 bg-black/20 mt-auto backdrop-blur-sm">
-            <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 text-center text-gray-400 text-sm space-y-2">
-              <p className="font-semibold text-gray-300">HSK 3 NEW3.0 - Lesson 11</p>
-              <p>© 2026 Dilfuza Kāng lǎo shī (telegram@diffila)</p>
-            </div>
-          </footer>
-        </div>
-      );
-    };
+        const GrammarQuiz = () => {
+            const [shuffledQuestions, setShuffledQuestions] = React.useState([]);
+            const [currentQ, setCurrentQ] = React.useState(0);
+            const [score, setScore] = React.useState(0);
+            const [showResult, setShowResult] = React.useState(false);
+            const [selectedOpt, setSelectedOpt] = React.useState(null);
 
-    // --- 渲染 ---
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+            React.useEffect(() => {
+                startQuiz();
+            }, []);
+
+            const startQuiz = () => {
+                setShuffledQuestions(shuffle([...grammarQuizData]));
+                setCurrentQ(0);
+                setScore(0);
+                setShowResult(false);
+                setSelectedOpt(null);
+            };
+
+            const handleAnswer = (opt) => {
+                if (selectedOpt) return;
+                setSelectedOpt(opt);
+                
+                if (opt === shuffledQuestions[currentQ].answer) setScore(s => s + 1);
+
+                setTimeout(() => {
+                    if (currentQ + 1 < shuffledQuestions.length) {
+                        setCurrentQ(c => c + 1);
+                        setSelectedOpt(null);
+                    } else {
+                        setShowResult(true);
+                    }
+                }, 1000);
+            };
+
+            if (shuffledQuestions.length === 0) return null;
+
+            if (showResult) {
+                return (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <CheckCircleIcon />
+                        <h2 className="text-4xl font-bold mt-4 mb-2">Grammatika Testi Tugadi</h2>
+                        <p className="text-2xl text-purple-300 mb-8">Natijangiz: {score} / {shuffledQuestions.length}</p>
+                        <button onClick={startQuiz} className="px-8 py-3 bg-purple-600 hover:bg-purple-500 rounded-full font-semibold shadow-lg transition">Qayta boshlash</button>
+                    </div>
+                );
+            }
+
+            const q = shuffledQuestions[currentQ];
+
+            return (
+                <div className="max-w-2xl mx-auto py-10 px-4">
+                    <div className="flex justify-between items-center mb-6 text-sm text-slate-400">
+                        <span>Savol {currentQ + 1} / {shuffledQuestions.length}</span>
+                        <span>To'g'ri: {score}</span>
+                    </div>
+                    
+                    <div className="glass-panel p-10 rounded-3xl text-center shadow-2xl mb-8 border border-purple-500/30">
+                        <h2 className="text-4xl font-bold zh-text drop-shadow-md leading-relaxed">{q.q}</h2>
+                    </div>
+
+                    <div className="flex justify-center gap-6">
+                        {q.options.map((opt, i) => {
+                            let btnClass = "px-10 py-5 rounded-2xl text-3xl zh-text font-bold transition shadow-lg border ";
+                            if (!selectedOpt) {
+                                btnClass += "bg-white/10 hover:bg-white/20 border-white/10 hover:-translate-y-1";
+                            } else {
+                                if (opt === q.answer) {
+                                    btnClass += "bg-emerald-500/80 border-emerald-400";
+                                } else if (opt === selectedOpt) {
+                                    btnClass += "bg-red-500/80 border-red-400";
+                                } else {
+                                    btnClass += "bg-white/5 border-white/5 opacity-50";
+                                }
+                            }
+
+                            return (
+                                <button key={i} onClick={() => handleAnswer(opt)} className={btnClass} disabled={!!selectedOpt}>
+                                    {opt}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const FillBlanksQuiz = () => {
+            const [shuffledQuestions, setShuffledQuestions] = React.useState([]);
+            const [currentQ, setCurrentQ] = React.useState(0);
+            const [score, setScore] = React.useState(0);
+            const [showResult, setShowResult] = React.useState(false);
+            const [selectedOpt, setSelectedOpt] = React.useState(null);
+
+            React.useEffect(() => {
+                startQuiz();
+            }, []);
+
+            const startQuiz = () => {
+                const processQs = fillBlanksData.map(q => ({
+                    ...q,
+                    opts: shuffle([...q.opts])
+                }));
+                setShuffledQuestions(shuffle(processQs));
+                setCurrentQ(0);
+                setScore(0);
+                setShowResult(false);
+                setSelectedOpt(null);
+            };
+
+            const handleAnswer = (opt) => {
+                if (selectedOpt) return;
+                setSelectedOpt(opt);
+                
+                if (opt === shuffledQuestions[currentQ].ans) setScore(s => s + 1);
+
+                setTimeout(() => {
+                    if (currentQ + 1 < shuffledQuestions.length) {
+                        setCurrentQ(c => c + 1);
+                        setSelectedOpt(null);
+                    } else {
+                        setShowResult(true);
+                    }
+                }, 1200);
+            };
+
+            if (shuffledQuestions.length === 0) return null;
+
+            if (showResult) {
+                return (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <CheckCircleIcon />
+                        <h2 className="text-4xl font-bold mt-4 mb-2">Ajoyib!</h2>
+                        <p className="text-2xl text-emerald-300 mb-8">Natijangiz: {score} / {shuffledQuestions.length}</p>
+                        <button onClick={startQuiz} className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-full font-semibold shadow-lg transition">Qayta boshlash</button>
+                    </div>
+                );
+            }
+
+            const q = shuffledQuestions[currentQ];
+            // Format question to have a visual blank
+            const parts = q.q.split('(_____)');
+            const visualQ = (
+                <span>
+                    {parts[0]}
+                    <span className={`inline-block border-b-2 mx-2 text-center min-w-[60px] font-bold ${selectedOpt ? (selectedOpt === q.ans ? 'text-emerald-400 border-emerald-400' : 'text-red-400 border-red-400') : 'text-transparent border-slate-400'}`}>
+                        {selectedOpt ? selectedOpt : '___'}
+                    </span>
+                    {parts[1]}
+                </span>
+            );
+
+            return (
+                <div className="max-w-3xl mx-auto py-10 px-4">
+                    <div className="flex justify-between items-center mb-6 text-sm text-slate-400">
+                        <span>Savol {currentQ + 1} / {shuffledQuestions.length}</span>
+                        <span>To'g'ri: {score}</span>
+                    </div>
+                    
+                    <div className="glass-panel p-10 rounded-3xl text-center shadow-2xl mb-10 min-h-[160px] flex items-center justify-center">
+                        <h2 className="text-3xl md:text-5xl font-bold zh-text leading-loose">
+                            {visualQ}
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {q.opts.map((opt, i) => {
+                            let btnClass = "p-4 rounded-xl text-2xl zh-text font-bold transition shadow-lg border ";
+                            if (!selectedOpt) {
+                                btnClass += "bg-white/5 hover:bg-white/20 border-white/10 hover:border-cyan-400/50";
+                            } else {
+                                if (opt === q.ans) {
+                                    btnClass += "bg-emerald-500/80 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.5)]";
+                                } else if (opt === selectedOpt) {
+                                    btnClass += "bg-red-500/80 border-red-400";
+                                } else {
+                                    btnClass += "bg-white/5 border-white/5 opacity-30";
+                                }
+                            }
+
+                            return (
+                                <button key={i} onClick={() => handleAnswer(opt)} className={btnClass} disabled={!!selectedOpt}>
+                                    {opt}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = React.useState('fleshkartalar');
+
+            const tabs = [
+                { id: 'fleshkartalar', label: "Fleshkartalar", icon: "🎴" },
+                { id: 'lug_at_testi', label: "Lug'at Testi", icon: "🎯" },
+                { id: 'muloqot', label: "Muloqot", icon: "💬" },
+                { id: 'grammatika', label: "Grammatika", icon: "📖" },
+                { id: 'grammatika_testi', label: "Grammatika Testi", icon: "📝" },
+                { id: 'soz_toldirish', label: "So'zlarni To'ldirish", icon: "🧩" }
+            ];
+
+            return (
+                <div className="flex flex-col min-h-screen">
+                    {/* Header */}
+                    <header className="glass-panel sticky top-0 z-50 rounded-b-3xl border-t-0 mb-6 border-b border-white/10 shadow-lg bg-[#0f172a]/80">
+                        <div className="max-w-6xl mx-auto px-4 py-5 text-center">
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 drop-shadow-sm mb-2">
+                                看来我没办法解决这个问题
+                            </h1>
+                            <p className="text-sm md:text-base text-slate-300 font-medium tracking-wide flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                                Dilfuza Kāng lǎo shī bilan xitoy tilini o'rganmiz
+                            </p>
+                        </div>
+                        
+                        {/* Navigation Scrollable */}
+                        <div className="max-w-6xl mx-auto px-2 overflow-x-auto hide-scroll pb-2">
+                            <div className="flex space-x-2 md:justify-center min-w-max px-2">
+                                {tabs.map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center gap-2 ${activeTab === tab.id ? 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg shadow-cyan-500/25 border-transparent border' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'}`}
+                                    >
+                                        <span>{tab.icon}</span> {tab.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main Content Area */}
+                    <main className="flex-1 max-w-6xl w-full mx-auto p-4 mb-20 relative">
+                        {/* Decorative Background Blob */}
+                        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-pulse pointer-events-none"></div>
+                        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-50 pointer-events-none"></div>
+                        
+                        <div className="relative z-10">
+                            {activeTab === 'fleshkartalar' && <Flashcards />}
+                            {activeTab === 'muloqot' && <Dialogues />}
+                            {activeTab === 'grammatika' && <Grammar />}
+                            {activeTab === 'lug_at_testi' && <VocabQuiz />}
+                            {activeTab === 'grammatika_testi' && <GrammarQuiz />}
+                            {activeTab === 'soz_toldirish' && <FillBlanksQuiz />}
+                        </div>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="glass-panel border-b-0 border-t border-white/10 py-6 text-center text-slate-400 mt-auto bg-[#0f172a]/90 backdrop-blur-md">
+                        <p className="text-sm font-semibold mb-1">HSK 3 NEW3.0 - Lesson 11</p>
+                        <p className="text-xs">© 2026 Dilfuza Kāng lǎo shī (telegram@diffila)</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
